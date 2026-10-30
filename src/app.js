@@ -5,19 +5,39 @@ app.use(express.json());
 
 const animais =[
     { id: 1, nome: "Lucky",
-        especie: "Gato"
+        tipoAnimal: "Gato",
+        especie: "Felis catus",
+        raca: "Siamês",
+        genero: "Macho",
+        idade: "5 Meses"
     },
     { id: 2, nome: "Thor",
-        especie: "Cachorro"
+        tipoAnimal: "Cão",
+        especie: "Canis Lupos familiaris",
+        raca: "Pastor Alemão",
+        genero: "Macho",
+        idade: "1 Ano"
     },
     { id: 3, nome: "Rex",
-        especie: "Papagaio"
+        tipoAnimal: "Papagaio",
+        especie: "Amazona amazonica",
+        raca: "Papagaio-Curica",
+        genero: "Macho",
+        idade: "1 Ano"
     },
     { id: 4, nome: "Pandora",
-        especie: "Coelho"
+        tipoAnimal: "Coelho",
+        especie: "Oryctolagus Cuniculus",
+        raca: "Coelho Europeu",
+        genero: "fêmea",
+        idade: "6 meses"
     },
-    { id: 5, nome: "Belinha" ,
-        especie: "Cachorro"
+    { id: 5, nome: "Belinha",
+        tipoAnimal: "Cão",
+        especie: "Canis Lupos familiaris",
+        raca: "Poodle",
+        genero: "fêmea",
+        idade: "2 Anos"
     }
 ];
 
@@ -40,8 +60,7 @@ app.get("/animais", (req, res) => {
 //cadastro
 
 app.post("/animais", (req, res) => {
-    animais.push(req.body);
-    res.status(201).json(animais);
+    const {nome, tipoAnimal, especie, raca, genero, idade}
 });
 
 //atualizar dados
