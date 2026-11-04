@@ -2,13 +2,13 @@ import express from "express";
 import type { Request, Response } from "express";
 
 export interface Animal{
-    id: Number;
-    nome: String;
-    tipoAnimal: String;
-    especie: String;
-    raca: String;
-    genero: String;
-    idade: Number;
+    id: number;
+    nome: string;
+    tipoAnimal: string;
+    especie: string;
+    raca: string;
+    genero: string;
+    idade: number;
 }
 
 const app = express();
@@ -101,11 +101,18 @@ app.post("/animais", (req: Request, res: Response) => {
 //atualizar dados
 
 app.put("/animais/:id", (req: Request, res: Response) => {
-        const index = buscarAnimal(req.params.id);
+    const index = buscarAnimal(String(req.params.id));
 
-        const {id, nome, tipoAnimal, especie, raca, genero, idade} = req.body;
-        
+    //verifica se o animal foi encontrado
 
+    if (index === -1) {
+        res.status(404).json({
+            mensagem: "Animal não encontrado!"
+        });
+            return;
+    }
+
+    const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
         animais[index]= {
         ...animais[index],
         nome,
@@ -113,12 +120,35 @@ app.put("/animais/:id", (req: Request, res: Response) => {
         especie,
         raca,
         genero,
-        idade:
-        }
-        res.status(200).json(animais);
-})
+        idade: Number(idade),
+        };
 
-// Inicia o servidor na porta 3000
+//Resposta com mensagem
+
+res.status(200).json({
+        mensagem: "Animal atualizado com sucesso!",
+        animal: animais[index]
+    });
+});
+
+//Requisição delete
+
+app.delete("/animais/:id",(req: Request, res: Response) => {
+    const index = buscarAnimal(String(req.params.id));
+
+    if (index === -1){
+        res.status(404).json({menssagem: "animal não encontrado"})
+    }
+
+// Remove o Livro do Array
+    animais.splice(index,1);
+
+    res.status(200).json({
+        menssagem: "animal removido com sucesso!",
+    
+    });
+});
+//Inicia o servidor na porta 3000
 
 app.listen(3000, () => {
     console.log("Servidor em execução na porta 3000");
