@@ -1,5 +1,25 @@
 {
+  "name": "api-orbita-e4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wlbrt773/api-orbita-e4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Wlbrt773/api-orbita-e4/issues"
+  },
+  "homepage": "https://github.com/Wlbrt773/api-orbita-e4#readme",
   "dependencies": {
-    "dotenv": "^18.0.9"
+    "express": "^5.3.0"
   }
 }

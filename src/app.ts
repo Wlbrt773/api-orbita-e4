@@ -123,6 +123,35 @@ app.put("/animais/:id", (req: Request, res: Response) => {
         idade: Number(idade),
         };
 
+//alterações específicas
+
+app.patch("/animais/:id", (req: Request, res: Response) => {
+    const index = buscarAnimal(String(req.params.id));
+
+    if (index === -1) {
+        res.status(404).json({
+            mensagem: "Animal não encontrado!"
+        });
+        return;
+    }
+
+    const { nome, tipoAnimal, especie, raca, genero, idade } = req.body;
+    animais[index] = {
+        ...animais[index],
+        ...(nome !== undefined && { nome }),
+        ...(tipoAnimal !== undefined && { tipoAnimal }),
+        ...(especie !== undefined && { especie }),
+        ...(raca !== undefined && { raca }),
+        ...(genero !== undefined && { genero }),
+        ...(idade !== undefined && { idade: Number(idade) })
+    };
+
+    res.status(200).json({
+        mensagem: "Animal atualizado parcialmente com sucesso!",
+        animal: animais[index]
+    });
+});
+
 //Resposta com mensagem
 
 res.status(200).json({
