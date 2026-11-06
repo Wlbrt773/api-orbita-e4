@@ -114,7 +114,7 @@ app.put("/animais/:id", (req: Request, res: Response) => {
 
     const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
         animais[index]= {
-        ...animais[index],
+        ...animais[index]!,
         nome,
         tipoAnimal,
         especie,
@@ -122,6 +122,14 @@ app.put("/animais/:id", (req: Request, res: Response) => {
         genero,
         idade: Number(idade),
         };
+
+//Resposta com mensagem
+
+res.status(200).json({
+        mensagem: "Animal atualizado com sucesso!",
+        animal: animais[index]
+    });
+});
 
 //alterações específicas
 
@@ -137,7 +145,7 @@ app.patch("/animais/:id", (req: Request, res: Response) => {
 
     const { nome, tipoAnimal, especie, raca, genero, idade } = req.body;
     animais[index] = {
-        ...animais[index],
+        ...animais[index]!,
         ...(nome !== undefined && { nome }),
         ...(tipoAnimal !== undefined && { tipoAnimal }),
         ...(especie !== undefined && { especie }),
@@ -146,15 +154,9 @@ app.patch("/animais/:id", (req: Request, res: Response) => {
         ...(idade !== undefined && { idade: Number(idade) })
     };
 
+    //Resposta com mensagem
+
     res.status(200).json({
-        mensagem: "Animal atualizado parcialmente com sucesso!",
-        animal: animais[index]
-    });
-});
-
-//Resposta com mensagem
-
-res.status(200).json({
         mensagem: "Animal atualizado com sucesso!",
         animal: animais[index]
     });
