@@ -111,37 +111,34 @@ app.post("/animais", async (req: Request<{},{},InterfaceAnimal>, res: Response) 
 
 //atualizar dados
 
-app.put("/animais/:id", (req: Request, res: Response) => {
-    const index = buscarAnimal(String(req.params.id));
+app.put("/animais/:id", async (req: Request<{id: string},{},InterfaceAnimal>, res: Response) => {
+try{
+    const { id } = req.params;
 
-    //verifica se o animal foi encontrado
+    const { nome, tipoAnimal, especie, raca, genero, idade} = req.body;
 
-    if (index === -1) {
-        res.status(404).json({
-            mensagem: "Animal não encontrado!"
+    const animalAtualizado = await Animal.findByIdAndUpdate(
+        id,
+        {
+            nome,
+            tipoAnimal,
+            especie,
+            raca,
+            genero,
+            idade:Number(idade),
+        },
+        {new: true}
+    );
+    
+        res.status(200).json({
+            mensagem: "Animal Atualizado com Sucesso!",
+            Animal: animalAtualizado
         });
-            return;
-    }
-
-    const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
-        animais[index]= {
-        ...animais[index]!,
-        nome,
-        tipoAnimal,
-        especie,
-        raca,
-        genero,
-        idade: Number(idade),
-        };
-
-//Resposta com mensagem
-
-res.status(200).json({
-        mensagem: "Animal atualizado com sucesso!",
-        animal: animais[index]
-    });
+    }catch (error){
+        res.status(500).json({mensagem:"Error ao atualizar animal."})
+        }
 });
-
+        
 //alterações específicas
 
 app.patch("/animais/:id", (req: Request, res: Response) => {
