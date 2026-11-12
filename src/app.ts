@@ -1,6 +1,6 @@
 import express from "express";
 import type { Request, Response } from "express";
-import Animal from "./models/Pet.js";
+import Animal, { type InterfaceAnimal } from "./models/Pet.js";
 
 // export interface Animal{
 //     id: number;
@@ -14,6 +14,7 @@ import Animal from "./models/Pet.js";
 
 const app = express();
 app.use(express.json());
+app.set("json spaces", 2);
 
 // const animais: Animal[] =[
 //     { id: 1,
@@ -85,26 +86,28 @@ app.get("/animais", async (req: Request , res: Response) => {
 
 //cadastro
 
-app.post("/animais", (req: Request, res: Response) => {
-    const {id, nome, tipoAnimal, especie, raca, genero, idade} = req.body;
+app.post("/animais", async (req: Request<{},{},InterfaceAnimal>, res: Response) => {
+    
+    try{
+    const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
 
-    const novoAnimal: Animal = {
-        id: Number(id),
+    const novoAnimal = await Animal.create({
         nome,
         tipoAnimal,
         especie,
         raca,
         genero,
         idade: Number(idade),
-    };
+    });
 
-    animais.push(novoAnimal);
-
-    res.status(201).json({
-        mensagem: "Animal Cadastrado com Sucesso!",
-        Animal: novoAnimal
-    })
-});
+        res.status(201).json({
+            mensagem: "Animal Cadastrado com Sucesso!",
+            Animal: novoAnimal
+        });
+        }catch (error){
+            res.status(500).json({mensagem:"Error ao cadastrar animal."})
+        }
+    });
 
 //atualizar dados
 

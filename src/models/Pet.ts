@@ -24,7 +24,7 @@ const animalSchema = new Schema (
 );
 
 //EXTRAÇÃO AUTOMÁTICA DO TIPOP (SUBSTITUIR A CRIAÇÃO MANUAL DA INTERFACE)
-export type InterfaceLivro = InferSchemaType<typeof animalSchema>;
+export type InterfaceAnimal = InferSchemaType<typeof animalSchema>;
 
 //CRIAÇÃO DO MODEL (MONGOOSE)
 const Animal = mongoose.model("Animal", animalSchema);
