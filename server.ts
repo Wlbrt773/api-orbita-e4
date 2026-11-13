@@ -2,7 +2,7 @@ import "dotenv/config";
 import app from "./src/app.js";
 import conectaNaDatabase from "./src/config/dbConnect.js";
 
-const porta = process.env.PORT || 3000;
+const porta = process.env.PORT;
 
 async function inicializarServidor(){
 

@@ -168,28 +168,31 @@ app.patch("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>
             res.status(500).json({mensagem: "Erro ao atualizar parcialmente o animal."});
     }
 });
-    res.status(200).json({
-        mensagem: "Animal atualizado com sucesso!",
-        animal: animais[index]
-    });
 
-//Requisição delete
+//Requisição delet
 
-app.delete("/animais/:id",(req: Request, res: Response) => {
-    const index = buscarAnimal(String(req.params.id));
+app.delete("/animais/:id", async (req: Request<{id: string}>, res: Response) => {
+    try{
 
-    if (index === -1){
-        res.status(404).json({menssagem: "animal não encontrado"})
+    const { id } = req.params;
+
+    const animalRemovido = await Animal.findByIdAndDelete(id);
+
+    if(!animalRemovido){
+        res.status(404).json({mensagem: "Animal não encontrado!"});
+        return;
     }
 
-// Remove o Livro do Array
-    animais.splice(index,1);
-
     res.status(200).json({
-        menssagem: "animal removido com sucesso!",
+        mensagem: "animal removido com sucesso!",
     
     });
-});
+}catch(error){
+    res.status(500).json({mensagem: "Erro ao remover animal."});
+}
+})
+
+
 //Inicia o servidor na porta 3000
 
 app.listen(3000, () => {
