@@ -111,64 +111,67 @@ app.post("/animais", async (req: Request<{},{},InterfaceAnimal>, res: Response) 
 
 //atualizar dados
 
-app.put("/animais/:id", async (req: Request<{id: string},{},InterfaceAnimal>, res: Response) => {
-try{
-    const { id } = req.params;
+app.put("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) => {
+    try{
+        const { id } = req.params;
 
-    const { nome, tipoAnimal, especie, raca, genero, idade} = req.body;
+        const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
 
-    const animalAtualizado = await Animal.findByIdAndUpdate(
-        id,
-        {
-            nome,
-            tipoAnimal,
-            especie,
-            raca,
-            genero,
-            idade:Number(idade),
-        },
-        {new: true}
-    );
-    
-        res.status(200).json({
-            mensagem: "Animal Atualizado com Sucesso!",
-            Animal: animalAtualizado
-        });
-    }catch (error){
-        res.status(500).json({mensagem:"Error ao atualizar animal."})
+        const animalAtualizado = await Animal.findByIdAndUpdate(
+            id,
+            {
+                nome,
+                tipoAnimal,
+                especie,
+                raca,
+                genero,
+                idade: Number(idade),
+            },
+            {new: true}
+        );
+
+        if(!animalAtualizado){
+            res.status(404).json({mensagem: "Animal não encontrado!"});
+            return;
         }
-});
-        
-//alterações específicas
 
-app.patch("/animais/:id", (req: Request, res: Response) => {
-    const index = buscarAnimal(String(req.params.id));
-
-    if (index === -1) {
-        res.status(404).json({
-            mensagem: "Animal não encontrado!"
+        res.status(200).json({
+            mensagem: "Animal atualizado com sucesso!",
+            animal: animalAtualizado
         });
-        return;
+    } catch (error){
+        res.status(500).json({mensagem: "Erro ao atualizar animal."})
     }
+});
 
-    const { nome, tipoAnimal, especie, raca, genero, idade } = req.body;
-    animais[index] = {
-        ...animais[index]!,
-        ...(nome !== undefined && { nome }),
-        ...(tipoAnimal !== undefined && { tipoAnimal }),
-        ...(especie !== undefined && { especie }),
-        ...(raca !== undefined && { raca }),
-        ...(genero !== undefined && { genero }),
-        ...(idade !== undefined && { idade: Number(idade) })
-    };
+//REQUISIÇÃO PATCH (ATUALIZAR PARCIALMENTE OS DADOS)
+app.patch("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) => {
+    try{
+            const { id } = req.params;
 
-    //Resposta com mensagem
+            const animalAtualizado = await Animal.findByIdAndUpdate(
+                id,
+                { $set: req.body },
+                { returnDocument: 'after' }
+            );
 
+            if(!animalAtualizado){
+                res.status(404).json({mensagem: "Animal não encontrado!"});
+                return;
+            }
+
+            res.status(200).json({
+                mensagem: "Animal atualizado parcialmente com sucesso!",
+                animal: animalAtualizado,
+            });
+    }catch(error){
+            res.status(500).json({mensagem: "Erro ao atualizar parcialmente o animal."});
+    }
+});
     res.status(200).json({
         mensagem: "Animal atualizado com sucesso!",
         animal: animais[index]
     });
-});
 
 //Requisição delete
 
