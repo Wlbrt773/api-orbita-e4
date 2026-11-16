@@ -75,32 +75,26 @@ app.get("/", (req: Request, res: Response) => {
 
 //GET REFATORADO 11/11/2026
 app.get("/animais", async (req: Request , res: Response) => {
-      
 });
 
 //cadastro
 
 app.post("/animais", async (req: Request<{},{},InterfaceAnimal>, res: Response) => {
-   
 });
 
 //atualizar dados
 
 app.put("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) => {
-    
 });
 
 //REQUISIÇÃO PATCH (ATUALIZAR PARCIALMENTE OS DADOS)
 app.patch("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) => {
-    
 });
 
 //Requisição delet
 
-app.delete("/animais/:id", async (req: Request<{id: string}>, res: Response) => {
-    
+app.delete("/animais/:id", async (req: Request<{id: string}>, res: Response) => {   
 })
-
 
 //Inicia o servidor na porta 3000
 
