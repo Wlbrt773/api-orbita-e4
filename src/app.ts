@@ -75,121 +75,30 @@ app.get("/", (req: Request, res: Response) => {
 
 //GET REFATORADO 11/11/2026
 app.get("/animais", async (req: Request , res: Response) => {
-    try{
-        const listaAnimais = await Animal.find({});
-        res.status(200).json(listaAnimais);
-    }catch (erro){
-        res.status(500).json({ mensagem: "Erro ao buscar animal."});
-    }
-    
+      
 });
 
 //cadastro
 
 app.post("/animais", async (req: Request<{},{},InterfaceAnimal>, res: Response) => {
-    
-    try{
-    const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
-
-    const novoAnimal = await Animal.create({
-        nome,
-        tipoAnimal,
-        especie,
-        raca,
-        genero,
-        idade: Number(idade),
-    });
-
-        res.status(201).json({
-            mensagem: "Animal Cadastrado com Sucesso!",
-            Animal: novoAnimal
-        });
-        }catch (error){
-            res.status(500).json({mensagem:"Error ao cadastrar animal."})
-        }
-    });
+   
+});
 
 //atualizar dados
 
 app.put("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) => {
-    try{
-        const { id } = req.params;
-
-        const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
-
-        const animalAtualizado = await Animal.findByIdAndUpdate(
-            id,
-            {
-                nome,
-                tipoAnimal,
-                especie,
-                raca,
-                genero,
-                idade: Number(idade),
-            },
-            {new: true}
-        );
-
-        if(!animalAtualizado){
-            res.status(404).json({mensagem: "Animal não encontrado!"});
-            return;
-        }
-
-        res.status(200).json({
-            mensagem: "Animal atualizado com sucesso!",
-            animal: animalAtualizado
-        });
-    } catch (error){
-        res.status(500).json({mensagem: "Erro ao atualizar animal."})
-    }
+    
 });
 
 //REQUISIÇÃO PATCH (ATUALIZAR PARCIALMENTE OS DADOS)
 app.patch("/animais/:id", async (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) => {
-    try{
-            const { id } = req.params;
-
-            const animalAtualizado = await Animal.findByIdAndUpdate(
-                id,
-                { $set: req.body },
-                { returnDocument: 'after' }
-            );
-
-            if(!animalAtualizado){
-                res.status(404).json({mensagem: "Animal não encontrado!"});
-                return;
-            }
-
-            res.status(200).json({
-                mensagem: "Animal atualizado parcialmente com sucesso!",
-                animal: animalAtualizado,
-            });
-    }catch(error){
-            res.status(500).json({mensagem: "Erro ao atualizar parcialmente o animal."});
-    }
+    
 });
 
 //Requisição delet
 
 app.delete("/animais/:id", async (req: Request<{id: string}>, res: Response) => {
-    try{
-
-    const { id } = req.params;
-
-    const animalRemovido = await Animal.findByIdAndDelete(id);
-
-    if(!animalRemovido){
-        res.status(404).json({mensagem: "Animal não encontrado!"});
-        return;
-    }
-
-    res.status(200).json({
-        mensagem: "animal removido com sucesso!",
     
-    });
-}catch(error){
-    res.status(500).json({mensagem: "Erro ao remover animal."});
-}
 })
 
 
