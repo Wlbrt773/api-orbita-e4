@@ -15,11 +15,6 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(animalRoutes);
 
-
-
-
-
-
 //Inicia o servidor na porta 3000
 app.listen(3000, () => {
     console.log("Servidor em execução na porta 3000");
