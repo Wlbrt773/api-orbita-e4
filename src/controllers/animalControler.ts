@@ -6,12 +6,11 @@ class AnimalController {
     //GET - LISTAR TODOS OS ANIMAIS DO BANCO DE DADOS
     static async listar (req: Request, res: Response) {
         try{
-                 const listaAnimais = await Animal.find({});
-                 res.status(200).json(listaAnimais);
+                const listaAnimais = await Animal.find({});
+                res.status(200).json(listaAnimais);
             }catch (erro){
-                 res.status(500).json({ mensagem: "Erro ao buscar animal."});
+                res.status(500).json({ mensagem: "Erro ao buscar animal."});
             }
-             
     }
     
     //POST - CADASTRAR NOVO ANIMAL NO BANCO DE DADOS
