@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 app.set("json spaces", 2);
 
-//REQUISIÇÕES
+//ROTA BASE
 
 app.get("/", (req: Request, res: Response) => {
     res.status(200).send(" API ORBITA - E4");
