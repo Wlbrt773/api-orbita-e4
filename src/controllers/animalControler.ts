@@ -31,6 +31,38 @@ class AnimalController {
         
         }
     }
+
+    //GET - FILTRAR ANIMAIS POR CRITÉRIOS OPCIONAIS - REQ QUERY
+    static async buscarPorFiltro (req: Request, res: Response) {
+        try{
+            //Extrair os possíveis filtros enviados após o "?" na url
+            const { tipoAnimal, raca, idade } = req.query;
+
+            //criar um objeto vazio para receber apenas os filtros preenchidos
+            const filtros: Record<string, any> = {};
+
+            if(tipoAnimal){
+                filtros.tipoAnimal = String(tipoAnimal) //busca exata
+            }
+
+            if(raca){
+                filtros.raca = String(raca)//busca exata
+            }
+
+            if(idade){
+                filtros.idade = {$regex: String(idade), $options:"i"}
+            }
+
+            const animaisFiltrados = await Animal.find(filtro);
+            res.status(200).json(animaisFiltrados)
+
+        }catch{(error){
+                res.status(500).json({mensagem:"Error ao filtrar animal."})
+            }
+
+        }
+    }
+
     //POST - CADASTRAR NOVO ANIMAL NO BANCO DE DADOS
     static async cadastrar (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
 
