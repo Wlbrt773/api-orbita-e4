@@ -14,3 +14,7 @@ router.post("/animais", AnimalController.cadastrar);
 router.put("/animais/:id", AnimalController.atualizar);
 router.patch("/animais/:id", AnimalController.atualizarParcial);
 router.delete("/animais/:id", AnimalController.remover);
+
+//EXPORTA AS ROTAS CONFIGURADAS PARA SEREM USADAS NO APP.TS
+
+export default router;
