@@ -10,9 +10,27 @@ class AnimalController {
                 res.status(200).json(listaAnimais);
             }catch (erro){
                 res.status(500).json({ mensagem: "Erro ao buscar animal."});
-            }
+        }
     }
-    
+
+
+    //GET - BUSCAR UM LIVRO ESPECÍFICO PELO ID - REQ PARAMS
+    static async buscarPorId (req: Request<{id: string}>, res: Response){
+        try{
+            const { id } = req.params;
+            const animalEncontrado = await Animal.findById(id);
+
+            if (!animalEncontrado){
+                res.status(404).json({mensagem: "animal não encontrado."});
+                return
+            }
+
+            res.status(200).json(animalEncontrado);
+        }catch (error){
+            res.status(500).json({mensagem: "Erro ao buscar animal po ID."});
+        
+        }
+    }
     //POST - CADASTRAR NOVO ANIMAL NO BANCO DE DADOS
     static async cadastrar (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
 
