@@ -10,14 +10,64 @@ class AnimalController {
                 res.status(200).json(listaAnimais);
             }catch (erro){
                 res.status(500).json({ mensagem: "Erro ao buscar animal."});
-            }
+        }
     }
-    
+
+
+    //GET - BUSCAR UM LIVRO ESPECÍFICO PELO ID - REQ PARAMS
+    static async buscarPorId (req: Request<{id: string}>, res: Response){
+        try{
+            const { id } = req.params;
+            const animalEncontrado = await Animal.findById(id);
+
+            if (!animalEncontrado){
+                res.status(404).json({mensagem: "animal não encontrado."});
+                return
+            }
+
+            res.status(200).json(animalEncontrado);
+        }catch (error){
+            res.status(500).json({mensagem: "Erro ao buscar animal po ID."});
+        
+        }
+    }
+
+    //GET - FILTRAR ANIMAIS POR CRITÉRIOS OPCIONAIS - REQ QUERY
+    static async buscarPorFiltro (req: Request, res: Response) {
+        try{
+            //Extrair os possíveis filtros enviados após o "?" na url
+            const { tipoAnimal, raca, idade } = req.query;
+
+            //criar um objeto vazio para receber apenas os filtros preenchidos
+            const filtros: Record<string, any> = {};
+
+            if(tipoAnimal){
+                filtros.tipoAnimal = String(tipoAnimal) //busca exata
+            }
+
+            if(raca){
+                filtros.raca = String(raca)//busca exata
+            }
+
+            if(idade){
+                filtros.idade = {$regex: String(idade), $options:"i"}
+            }
+
+            const animaisFiltrados = await Animal.find(filtro);
+            res.status(200).json(animaisFiltrados)
+
+        }catch(error){
+                res.status(500).json({mensagem:"Error ao filtrar animal."})
+            }
+
+        }
+    }
+
     //POST - CADASTRAR NOVO ANIMAL NO BANCO DE DADOS
     static async cadastrar (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
 
         try{
-                const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
+                const {nome, tipoAnimal, especie, raca, genero, idade, cover} = req.body;
             
                 const novoAnimal = await Animal.create({
                     nome,
@@ -26,6 +76,7 @@ class AnimalController {
                     raca,
                     genero,
                     idade: Number(idade),
+                    cover
                 });
             
                     res.status(201).json({
@@ -44,7 +95,7 @@ class AnimalController {
         try{
                 const { id } = req.params;
         
-                const {nome, tipoAnimal, especie, raca, genero, idade} = req.body;
+                const {nome, tipoAnimal, especie, raca, genero, idade, cover} = req.body;
         
                 const animalAtualizado = await Animal.findByIdAndUpdate(
                     id,
@@ -55,6 +106,7 @@ class AnimalController {
                         raca,
                         genero,
                         idade: Number(idade),
+                        cover
                     },
                     {new: true}
                 );

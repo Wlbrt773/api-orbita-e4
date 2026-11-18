@@ -1,14 +1,5 @@
 import mongoose, {Schema, Document, type InferSchemaType} from "mongoose";
 
-//export interface InterfaceAnimal extends Document {
-    //nome: string;
-    //tipoAnimal: string;
-    //especie: string;
-    //raca: string;
-    //genero: string;
-    //idade: number;
-//}
-
 //DEFINIÇÃO DO SCHEMA MAPEANDO OS CAMPOS
 const animalSchema = new Schema (
     {
@@ -18,6 +9,7 @@ const animalSchema = new Schema (
         raca: { type: String, required: true },
         genero: { type: String, required: true },
         idade: { type: Number, required: true },
+        cover: {type: String, default: "https://placehold.co/300x450?text=No+Cover"},
     },
     { versionKey: false}
 
