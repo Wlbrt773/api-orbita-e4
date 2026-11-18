@@ -56,7 +56,7 @@ class AnimalController {
             const animaisFiltrados = await Animal.find(filtro);
             res.status(200).json(animaisFiltrados)
 
-        }catch{(error){
+        }catch(error){
                 res.status(500).json({mensagem:"Error ao filtrar animal."})
             }
 
