@@ -1,4 +1,3 @@
-import { title } from "node:process";
 import { z } from "zod";
 
 //CRIAR AS REGRAS PARA CADASTRO (POST) E ATUALIZAÇÃO (PUT)
@@ -13,7 +12,7 @@ export const criarAnimalsValidator = z.object ({
         .url("A capa deve ser uma URL válida.")
         .optional()
         .or (z.literal(""))
-        .transform((val) => (val === "" ? underfined:val)),
+        .transform((val) => (val === "" ? undefined:val)),
 });
 
 export const atualizarAnimalsValidator = criarAnimalsValidator.partial();
