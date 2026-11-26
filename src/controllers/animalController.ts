@@ -1,12 +1,20 @@
 import type {Request, Response} from "express";
 import Animal, { type InterfaceAnimal} from "../models/Pet.js";
+import type { IAnimalRepository, FiltroAnimalDTO, AnimalDTO } from "../repositories/IAnimalRepository.js";
 
 class AnimalController {
 
+    private animalRepository: IAnimalRepository;
+
+    constructor(animalRepository: IAnimalRepository){
+        this.animalRepository = animalRepository;
+    }
+
+
     //GET - LISTAR TODOS OS ANIMAIS DO BANCO DE DADOS
-    static async listar (req: Request, res: Response) {
+    async listar (req: Request, res: Response) {
         try{
-                const listaAnimais = await Animal.find({});
+                const listaAnimais = await this.animalRepository.listar();
                 res.status(200).json(listaAnimais);
             }catch (erro){
                 res.status(500).json({ mensagem: "Erro ao buscar animal."});
@@ -15,10 +23,10 @@ class AnimalController {
 
 
     //GET - BUSCAR UM LIVRO ESPECÍFICO PELO ID - REQ PARAMS
-    static async buscarPorId (req: Request<{id: string}>, res: Response){
+    async buscarPorId (req: Request<{id: string}>, res: Response){
         try{
             const { id } = req.params;
-            const animalEncontrado = await Animal.findById(id);
+            const animalEncontrado = await this.animalRepository.buscarPorId(id);
 
             if (!animalEncontrado){
                 res.status(404).json({mensagem: "animal não encontrado."});
@@ -33,13 +41,13 @@ class AnimalController {
     }
 
     //GET - FILTRAR ANIMAIS POR CRITÉRIOS OPCIONAIS - REQ QUERY
-    static async buscarPorFiltro (req: Request, res: Response) {
+    async buscarPorFiltro (req: Request, res: Response) {
         try{
             //Extrair os possíveis filtros enviados após o "?" na url
             const { tipoAnimal, raca, idade } = req.query;
 
             //criar um objeto vazio para receber apenas os filtros preenchidos
-            const filtros: Record<string, any> = {};
+            const filtros: FiltroAnimalDTO = {};
 
             if(tipoAnimal){
                 filtros.tipoAnimal = String(tipoAnimal) //busca exata
@@ -49,11 +57,11 @@ class AnimalController {
                 filtros.raca = String(raca)//busca exata
             }
 
-            if(idade){
-                filtros.idade = {$regex: String(idade), $options:"i"}
+            if (idade) {
+                filtros.idade = Number(idade);
             }
 
-            const animaisFiltrados = await Animal.find(filtro);
+            const animaisFiltrados = await this.animalRepository.buscarPorFiltro(filtros);
             res.status(200).json(animaisFiltrados)
 
         }catch(error){
@@ -61,24 +69,14 @@ class AnimalController {
             }
 
         }
-    }
+
 
     //POST - CADASTRAR NOVO ANIMAL NO BANCO DE DADOS
-    static async cadastrar (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
+    async cadastrar (req: Request<{},{}, InterfaceAnimal>, res:Response) {
 
-        try{
-                const {nome, tipoAnimal, especie, raca, genero, idade, cover} = req.body;
-            
-                const novoAnimal = await Animal.create({
-                    nome,
-                    tipoAnimal,
-                    especie,
-                    raca,
-                    genero,
-                    idade: Number(idade),
-                    cover
-                });
-            
+            try{
+            const novoAnimal = await this.animalRepository.cadastrar(req.body);
+
                     res.status(201).json({
                         mensagem: "Animal Cadastrado com Sucesso!",
                         Animal: novoAnimal
@@ -90,26 +88,11 @@ class AnimalController {
     }
 
     //PUT - ATUALIZAR DADOS DE UM ANIMAL NO BANCO DE DADOS
-    static async atualizar (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
+    async atualizar (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
     
         try{
                 const { id } = req.params;
-        
-                const {nome, tipoAnimal, especie, raca, genero, idade, cover} = req.body;
-        
-                const animalAtualizado = await Animal.findByIdAndUpdate(
-                    id,
-                    {
-                        nome,
-                        tipoAnimal,
-                        especie,
-                        raca,
-                        genero,
-                        idade: Number(idade),
-                        cover
-                    },
-                    {new: true}
-                );
+                const animalAtualizado = await this.animalRepository.atualizar(id, req.body);
         
                 if(!animalAtualizado){
                     res.status(404).json({mensagem: "Animal não encontrado!"});
@@ -127,17 +110,13 @@ class AnimalController {
     }
 
     //PATCH - ATUALIZAR PARCIALMENTE OS DADOS DE UM ANIMAL NO BANCO DE DADOS
-    static async atualizarParcial (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
+    async atualizarParcial (req: Request<{id: string}, {}, InterfaceAnimal>, res: Response) {
     
         try{
                 const { id } = req.params;
-    
-                const animalAtualizado = await Animal.findByIdAndUpdate(
-                    id,
-                    { $set: req.body },
-                    { returnDocument: 'after' }
-                );
-    
+                
+                const animalAtualizado = await this.animalRepository.atualizarParcial(id, req.body);
+
                 if(!animalAtualizado){
                     res.status(404).json({mensagem: "Animal não encontrado!"});
                     return;
@@ -149,20 +128,18 @@ class AnimalController {
                 });
             }catch(error){
                     res.status(500).json({mensagem: "Erro ao atualizar parcialmente o animal."});
-            }
-
+        }
     }
 
     //DELETE - REMOVER UM ANIMAL DO BANCO DE DADOS
-    static async remover (req: Request<{id: string}>, res: Response) {
+    async remover (req: Request<{id: string}>, res: Response) {
         
         try{
-
-                const { id } = req.params;
+        const { id } = req.params;
             
-                const animalRemovido = await Animal.findByIdAndDelete(id);
+        const animalRemovido = await this.animalRepository.remover(id);
             
-                if(!animalRemovido){
+            if(!animalRemovido){
                     res.status(404).json({mensagem: "Animal não encontrado!"});
                     return;
                 }
@@ -171,10 +148,11 @@ class AnimalController {
                     mensagem: "animal removido com sucesso!",
                 
                 });
-            }catch(error){
+        }catch(error){
                 res.status(500).json({mensagem: "Erro ao remover animal."});
-            }
         }
+    }
 };
+
 
 export default AnimalController;
