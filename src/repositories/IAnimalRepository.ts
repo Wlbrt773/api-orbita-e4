@@ -28,5 +28,5 @@ export interface IAnimalRepository {
     cadastrar(dados: AnimalDTO): Promise<AnimalDTO>;
     atualizar(id: string, dados: AnimalDTO): Promise<AnimalDTO[]>;
     atualizarParcial(id: string, dados: Partial<AnimalDTO>): Promise<AnimalDTO | null>;
-    deletar(id: string): Promise<boolean>;
+    remover(id: string): Promise<boolean>;
 }

@@ -2,6 +2,9 @@ import Animal from "../models/Pet.js";
 import type { IAnimalRepository, AnimalDTO, FiltroAnimalDTO } from "./IAnimalRepository.js";
 
 export class MongoAnimalRepository implements IAnimalRepository {
+    remover(id: string): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
 
     async listar() {
         return await Animal.find({});

@@ -3,7 +3,7 @@
 import { Router } from "express";
 
 //IMPORTA O CONTROLLER DE ANIMAIS
-import AnimalController from "../controllers/animalControler.js";
+import AnimalController from "../controllers/animalController.js";
 
 //IMPORTA O MIDDLEWARE (VALIDAÇÃO DE DADOS)
 import { validarDados } from "../middlewares/dataValidator.js";
@@ -19,7 +19,7 @@ router.get("/animais", AnimalController.listar);
 router.get("/animais/busca", AnimalController.buscarPorFiltro);
 
 //2 - ROTAS DE BUSCA COM PARÂMETRO DINÂMICO
-router.get("/animais:id", AnimalController.buscarPorId);
+router.get("/animais/:id", AnimalController.buscarPorId);
 
 //CRIAÇÃO DE ROTAS DA ENTIDADE ANIMAL
 router.post("/animais", validarDados(criarAnimalsValidator), AnimalController.cadastrar);
